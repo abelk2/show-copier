@@ -1,0 +1,9 @@
+--sonarr-url=https://sonarr.example.com/api/v3
+--sonarr-api-key=
+--radarr-url=https://radarr.example.com/api/v3
+--radarr-api-key=
+--destination=user@example.com:/home/plex
+--path-prefix=/mnt/example
+--tag=test
+"--schedule=0 */5 * * *"
+--dry-run
