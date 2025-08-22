@@ -1,10 +1,15 @@
+import java.time.ZoneOffset
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
+
 plugins {
     kotlin("jvm") version "2.2.10"
     kotlin("plugin.serialization") version "2.2.10"
+    id("com.google.cloud.tools.jib") version "3.4.5"
 }
 
 group = "eu.abelk.showcopier"
-version = "1.0-SNAPSHOT"
+version = "1.0.0"
 
 repositories {
     mavenCentral()
@@ -25,10 +30,25 @@ dependencies {
     implementation("dev.inmo:krontab:2.7.2")
 }
 
-tasks.test {
-    useJUnitPlatform()
-}
-
-kotlin {
-    jvmToolchain(21)
+jib {
+    from {
+        image = "eclipse-temurin:17.0.15_6-jre-jammy"
+        platforms {
+            platform {
+                architecture = "arm"
+                os = "linux"
+            }
+        }
+    }
+    to {
+        image = "abelk/show-copier:${project.version}"
+    }
+    container {
+        mainClass = "eu.abelk.showcopier.MainKt"
+        creationTime =
+            ZonedDateTime
+                .now(ZoneOffset.UTC)
+                .format(DateTimeFormatter.ISO_DATE_TIME)
+    }
+    setAllowInsecureRegistries(true)
 }
