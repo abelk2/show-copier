@@ -14,11 +14,10 @@ The local machine has to be able to SSH into the remote one.
 
 ## Deployment
 ```sh
-# Build image to tarball
+# Build image to tarball (or download from GitHub release)
 ./gradlew jibBuildTar
 
-# Copy tarball from the build directory
-# to the remote machine, then load it
+# Copy tarball to the remote machine, then load it
 docker load --input jib-image.tar
 
 # Start the daemon
