@@ -9,6 +9,9 @@ This is useful when you have Sonarr/Radarr on one machine with its
 own Plex instance, and you also have a remote Plex server at another
 location where you do not want separate Sonarr/Radarr.
 
+## Prerequisites
+The local machine has to be able to SSH into the remote one.
+
 ## Deployment
 ```sh
 # Build image to tarball
@@ -30,8 +33,8 @@ docker run -p 8080:8080 -d --restart=always --name show-copier abelk/show-copier
   "--schedule=0 */5 * * *"
 ```
 
-_Use the `--dry-run` switch to log which files would be copied and where without actually copying them._
-
+_Use the `--dry-run` switch to log which files would be copied and where without actually copying them. In this case
+you might want to omit the `--schedule` which makes the copy run only once and quit._
 
 ## Notes
 - You might want to change the architecture in the jib config in the build file, it's set to `arm` currently
