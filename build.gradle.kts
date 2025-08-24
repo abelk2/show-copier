@@ -30,10 +30,10 @@ dependencies {
 
 jib {
     from {
-        image = "eclipse-temurin:17.0.15_6-jre-jammy"
+        image = "eclipse-temurin:21.0.8_9-jre-jammy"
         platforms {
             platform {
-                architecture = "arm"
+                architecture = "amd64"
                 os = "linux"
             }
         }

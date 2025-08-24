@@ -26,6 +26,7 @@ docker run -p 8080:8080 -d
   --restart=always \
   --name show-copier \
   -v /home/plex:/home/plex \
+  -v /home/sc:/home/sc \
   abelk/show-copier:1.0.0 \
   --sonarr-url=https://sonarr.example.com/api/v3 \
   --sonarr-api-key= \
@@ -37,6 +38,7 @@ docker run -p 8080:8080 -d
   --destination=/home/plex \
   --path-prefix=/mnt/example \
   --tag=test \
+  --storageFile=/home/sc/storage.json \
   "--schedule=0 */5 * * *"
 ```
 
@@ -76,8 +78,3 @@ Usage: <main class> [--dry-run] [--help] --destination=PATH
       --storage=FILE         the remote host
       --tag=TAG              the tag to filter for
 ```
-
-
-## Notes
-- You might want to change the architecture in the jib config in the build file, it's set to `arm` currently
-  (I use it on Raspberry Pi).
