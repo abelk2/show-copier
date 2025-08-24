@@ -26,8 +26,13 @@ class DownloadService(
             logger.info("Would download: $downloadUrl -> $downloadPath")
         } else {
             logger.info("Downloading: $downloadUrl -> $downloadPath")
-            downloadClient.getFile(downloadUrl)
-                .copyTo(File(downloadPath).writeChannel())
+            val downloadChannel = downloadClient.getFile(downloadUrl)
+            File(downloadPath)
+                .apply { parentFile?.mkdirs() }
+                .outputStream().channel
+                .use { fileChannel ->
+                    downloadChannel.copyTo(fileChannel)
+                }
             logger.info("Downloaded: $downloadUrl")
         }
     }

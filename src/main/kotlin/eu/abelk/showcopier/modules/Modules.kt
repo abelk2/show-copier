@@ -11,11 +11,14 @@ import eu.abelk.showcopier.service.SeriesService
 import eu.abelk.showcopier.service.StorageService
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
+import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.logging.Logging
+import io.ktor.http.HttpHeaders
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import kotlin.reflect.KClass
+import kotlin.time.Duration.Companion.hours
 
 class Modules(parameters: Parameters) {
     private val container = Container()
@@ -30,9 +33,14 @@ class Modules(parameters: Parameters) {
             }
             register {
                 HttpClient(CIO) {
-                    install(Logging)
+                    install(Logging) {
+                        sanitizeHeader { header -> header == HttpHeaders.Authorization }
+                    }
                     install(ContentNegotiation) {
                         json(get<Json>())
+                    }
+                    install(HttpTimeout) {
+                        requestTimeoutMillis = 5.hours.inWholeMilliseconds
                     }
                 }
             }
