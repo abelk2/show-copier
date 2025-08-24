@@ -38,7 +38,7 @@ docker run -p 8080:8080 -d
   --destination=/home/plex \
   --path-prefix=/mnt/example \
   --tag=test \
-  --storageFile=/home/sc/storage.json \
+  --storage=/home/sc/storage.json \
   "--schedule=0 */5 * * *"
 ```
 
