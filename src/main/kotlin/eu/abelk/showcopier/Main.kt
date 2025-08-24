@@ -12,14 +12,18 @@ private val logger = logger("Main")
 suspend fun main(args: Array<String>) {
     val parameters = Parameters()
     try {
-        val result = CommandLine(parameters).parseArgs(*args)
-        CommandLine.printHelpIfRequested(result)
+        val parseResult = CommandLine(parameters).parseArgs(*args)
+        if (!CommandLine.printHelpIfRequested(parseResult)) {
+            logger.info("Starting show copier with arguments: $parameters")
 
-        if (parameters.schedule.isNullOrBlank()) {
-            runCopy(parameters)
-        } else {
-            doInfinity(parameters.schedule!!) {
-                runCopy(parameters)
+            if (parameters.schedule.isNullOrBlank()) {
+                logger.info("No schedule requested, running only once")
+                runDownloads(parameters)
+            } else {
+                logger.info("Schedule requested, scheduling: ${parameters.schedule}")
+                doInfinity(parameters.schedule!!) {
+                    runDownloads(parameters)
+                }
             }
         }
     } catch (exception: PicocliException) {
@@ -27,11 +31,11 @@ suspend fun main(args: Array<String>) {
     }
 }
 
-private suspend fun runCopy(parameters: Parameters) =
+private suspend fun runDownloads(parameters: Parameters) =
     runCatching {
         Modules(parameters)
-            .get<CopyCommand>()
+            .get<DownloadCommand>()
             .run()
     }.onFailure { throwable ->
-        logger.error("Failed to run copy", throwable)
+        logger.error("Failed to run downloads", throwable)
     }

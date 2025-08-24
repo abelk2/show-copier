@@ -3,6 +3,7 @@ package eu.abelk.showcopier.domain.cli
 import org.apache.commons.lang3.builder.EqualsBuilder
 import org.apache.commons.lang3.builder.HashCodeBuilder
 import org.apache.commons.lang3.builder.ToStringBuilder
+import org.apache.commons.lang3.builder.ToStringExclude
 import org.apache.commons.lang3.builder.ToStringStyle.SHORT_PREFIX_STYLE
 import picocli.CommandLine.Option
 import java.io.File
@@ -24,6 +25,7 @@ class Parameters {
         required = true,
         description = ["the API key for Sonarr"]
     )
+    @ToStringExclude
     var sonarrApiKey: String = ""
 
     @Option(
@@ -40,13 +42,14 @@ class Parameters {
         required = true,
         description = ["the API key for Radarr"]
     )
+    @ToStringExclude
     var radarrApiKey: String = ""
 
     @Option(
         names = ["--destination"],
         paramLabel = "PATH",
         required = true,
-        description = ["the root destination to copy to, e.g. user@remote.host:/path/to/root"]
+        description = ["the root directory to copy to, e.g. /path/to/root"]
     )
     var destination: String = ""
 
@@ -57,6 +60,31 @@ class Parameters {
         description = ["the prefix to cut from series/movie paths, e.g. /mnt/shows"]
     )
     var pathPrefix: String = ""
+
+    @Option(
+        names = ["--download-base-url"],
+        paramLabel = "URL",
+        required = true,
+        description = ["the base URL for downloading shows"]
+    )
+    var downloadBaseUrl: URL = URI("https://example.com/shows").toURL()
+
+    @Option(
+        names = ["--download-username"],
+        paramLabel = "USERNAME",
+        required = true,
+        description = ["username for the download URL"]
+    )
+    var downloadUsername: String = ""
+
+    @Option(
+        names = ["--download-password"],
+        paramLabel = "PASSWORD",
+        required = true,
+        description = ["password for the download URL"]
+    )
+    @ToStringExclude
+    var downloadPassword: String = ""
 
     @Option(
         names = ["--storage"],
@@ -87,6 +115,13 @@ class Parameters {
         ]
     )
     var schedule: String? = null
+
+    @Option(
+        names = ["--max-parallel-downloads"],
+        paramLabel = "LIMIT",
+        description = ["the maximum number of parallel downloads"]
+    )
+    var maxParallelDownloads: Int = 10
 
     @Option(
         names = ["--help"],

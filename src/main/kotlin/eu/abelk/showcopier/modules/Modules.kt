@@ -1,10 +1,11 @@
 package eu.abelk.showcopier.modules
 
-import eu.abelk.showcopier.CopyCommand
+import eu.abelk.showcopier.DownloadCommand
+import eu.abelk.showcopier.client.DownloadClient
 import eu.abelk.showcopier.client.RadarrClient
 import eu.abelk.showcopier.client.SonarrClient
 import eu.abelk.showcopier.domain.cli.Parameters
-import eu.abelk.showcopier.service.CopyService
+import eu.abelk.showcopier.service.DownloadService
 import eu.abelk.showcopier.service.MoviesService
 import eu.abelk.showcopier.service.SeriesService
 import eu.abelk.showcopier.service.StorageService
@@ -70,18 +71,28 @@ class Modules(parameters: Parameters) {
                 )
             }
             register {
-                CopyService(
-                    destination = parameters.destination,
+                DownloadClient(
+                    httpClient = get<HttpClient>(),
+                    downloadUsername = parameters.downloadUsername,
+                    downloadPassword = parameters.downloadPassword
+                )
+            }
+            register {
+                DownloadService(
+                    downloadClient = get<DownloadClient>(),
+                    downloadBaseUrl = parameters.downloadBaseUrl.toString(),
+                    downloadDirectory = parameters.destination,
                     pathPrefix = parameters.pathPrefix,
                     dryRun = parameters.dryRun
                 )
             }
             register {
-                CopyCommand(
+                DownloadCommand(
                     seriesService = get<SeriesService>(),
                     moviesService = get<MoviesService>(),
-                    copyService = get<CopyService>(),
+                    downloadService = get<DownloadService>(),
                     storageService = get<StorageService>(),
+                    maxParallelDownloads = parameters.maxParallelDownloads,
                     dryRun = parameters.dryRun
                 )
             }

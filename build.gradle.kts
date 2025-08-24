@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "eu.abelk.showcopier"
-version = "1.0.0"
+version = "1.1.0"
 
 repositories {
     mavenCentral()
@@ -25,8 +25,6 @@ dependencies {
     implementation("info.picocli:picocli:4.7.7")
     implementation("org.apache.commons:commons-lang3:3.18.0")
     implementation("org.slf4j:slf4j-simple:2.0.17")
-    implementation("com.github.fracpete:rsync4j-core:3.3.0-5")
-    implementation("com.github.fracpete:processoutput4j:0.1.0")
     implementation("dev.inmo:krontab:2.7.2")
 }
 
