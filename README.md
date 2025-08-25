@@ -63,6 +63,8 @@ Usage: <main class> [--dry-run] [--help] --destination=PATH
                              username for the download URL
       --dry-run              list shows to copy without copying anything
       --help                 display a help message
+      --max-download-buffer-size=LIMIT
+                             the maximum size of the download buffer per file, in bytes
       --max-parallel-downloads=LIMIT
                              the maximum number of parallel downloads
       --path-prefix=PREFIX   the prefix to cut from series/movie paths, e.g.
@@ -70,8 +72,8 @@ Usage: <main class> [--dry-run] [--help] --destination=PATH
       --radarr-api-key=API-KEY
                              the API key for Radarr
       --radarr-url=URL       the base URL of Radarr API
-      --schedule=CRON        cron expression for daemon mode (e.g. 0 */5 * *
-                               *); omitting it will run the copy once and quit
+      --schedule=CRON        cron expression for daemon mode (e.g. 0 */5 * * *);
+                             omitting it will run the copy once and quit
       --sonarr-api-key=API-KEY
                              the API key for Sonarr
       --sonarr-url=URL       the base URL of Sonarr API

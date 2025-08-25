@@ -3,8 +3,7 @@ package eu.abelk.showcopier.service
 import eu.abelk.showcopier.client.DownloadClient
 import eu.abelk.showcopier.logging.logger
 import io.ktor.http.encodeURLPath
-import io.ktor.util.cio.writeChannel
-import io.ktor.utils.io.copyTo
+import kotlinx.io.asSink
 import java.io.File
 
 class DownloadService(
@@ -26,13 +25,11 @@ class DownloadService(
             logger.info("Would download: $downloadUrl -> $downloadPath")
         } else {
             logger.info("Downloading: $downloadUrl -> $downloadPath")
-            val downloadChannel = downloadClient.getFile(downloadUrl)
-            File(downloadPath)
+            val fileSink = File(downloadPath)
                 .apply { parentFile?.mkdirs() }
-                .outputStream().channel
-                .use { fileChannel ->
-                    downloadChannel.copyTo(fileChannel)
-                }
+                .outputStream()
+                .asSink()
+            downloadClient.getFile(downloadUrl, fileSink)
             logger.info("Downloaded: $downloadUrl")
         }
     }

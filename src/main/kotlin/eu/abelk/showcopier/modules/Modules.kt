@@ -82,7 +82,8 @@ class Modules(parameters: Parameters) {
                 DownloadClient(
                     httpClient = get<HttpClient>(),
                     downloadUsername = parameters.downloadUsername,
-                    downloadPassword = parameters.downloadPassword
+                    downloadPassword = parameters.downloadPassword,
+                    maxDownloadBufferSize = parameters.maxDownloadBufferSize
                 )
             }
             register {

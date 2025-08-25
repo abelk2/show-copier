@@ -124,6 +124,13 @@ class Parameters {
     var maxParallelDownloads: Int = 10
 
     @Option(
+        names = ["--max-download-buffer-size"],
+        paramLabel = "LIMIT",
+        description = ["the maximum size of the download buffer per file, in bytes"]
+    )
+    var maxDownloadBufferSize: Long = 1048576L
+
+    @Option(
         names = ["--help"],
         usageHelp = true,
         description = ["display a help message"]
