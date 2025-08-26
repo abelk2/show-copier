@@ -12,10 +12,10 @@ data class CopiedShows(
 ) {
     fun mergeWith(other: CopiedShows): CopiedShows {
         val mergedShows = sonarrShows.toMutableMap()
-        other.sonarrShows.forEach { seriesId, series ->
+        other.sonarrShows.forEach { (seriesId, series) ->
             mergedShows.merge(seriesId, series) { series1: SonarrShow, series2: SonarrShow ->
                 val mergedSeasons = series1.copiedSeasons.toMutableMap()
-                series2.copiedSeasons.forEach { seasonNumber, episodeIds ->
+                series2.copiedSeasons.forEach { (seasonNumber, episodeIds) ->
                     mergedSeasons.merge(seasonNumber, episodeIds) { episodeIds1, episodeIds2 ->
                         episodeIds1 + episodeIds2
                     }
@@ -30,6 +30,9 @@ data class CopiedShows(
     }
 
     companion object {
+        fun createFrom(copyable: Copyable) =
+            createFrom(listOf(copyable))
+
         fun createFrom(copyables: List<Copyable>) =
             CopiedShows(
                 sonarrShows = copyables

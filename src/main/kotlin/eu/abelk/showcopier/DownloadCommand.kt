@@ -6,9 +6,14 @@ import eu.abelk.showcopier.service.DownloadService
 import eu.abelk.showcopier.service.MoviesService
 import eu.abelk.showcopier.service.SeriesService
 import eu.abelk.showcopier.service.StorageService
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flatMapMerge
+import kotlinx.coroutines.flow.flow
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
@@ -23,6 +28,7 @@ class DownloadCommand(
 ) {
     private val logger = logger()
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     suspend fun run() {
         logger.info("Starting downloads at ${Clock.System.now()}")
 
@@ -43,22 +49,17 @@ class DownloadCommand(
         } else {
             logger.info("Downloading ${copyables.size} series episodes and movies")
             coroutineScope {
-                copyables.chunked(maxParallelDownloads)
-                    .forEach { chunk ->
-                        chunk.map { copyable ->
-                            async {
-                                downloadService.downloadFile(copyable.path)
+                copyables.asFlow()
+                    .flatMapMerge(maxParallelDownloads) { copyable ->
+                        flow {
+                            downloadService.downloadFile(copyable.path)
+                            if (!dryRun) {
+                                logger.info("Saving downloaded show state: $copyable")
+                                storageService.mergeShows(CopiedShows.createFrom(copyable))
                             }
+                            emit(Unit)
                         }
-                        .awaitAll()
-                    }
-            }
-
-            if (dryRun) {
-                logger.info("Dry run was selected, skipping save")
-            } else {
-                logger.info("Saving list of downloaded series episodes and movies")
-                storageService.mergeShows(CopiedShows.createFrom(copyables))
+                    }.collect()
             }
         }
 
